@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h1 class="h4 mb-3">Generate</h1>
+
+        <label class="form-label">Seed hint (optional)</label>
+        <input id="seedHint" class="form-control" placeholder="e.g. demo-123">
+
+        <div class="d-flex gap-2 mt-3">
+          <button id="btnGen" class="btn btn-primary" type="button">Generate</button>
+          <button id="btnReset" class="btn btn-outline-secondary" type="button">Reset</button>
+        </div>
+
+        <div class="form-text mt-2">
+          Таблиця зберігається тільки в браузері (stateless сервер).
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info mt-3 mb-0 small">
+      rand_a — crypto random<br>
+      calc_b — формула від sha256(ts_ms+nonce+seed_hint) і rand_a<br>
+      ts_ms/nonce — для аналізу послідовностей
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h2 class="h5 mb-0">History</h2>
+          <span class="text-muted small">rows: <span id="rowCount">0</span></span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-sm table-striped align-middle mb-0">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>ts_ms</th>
+                <th>rand_a</th>
+                <th>calc_b</th>
+                <th>nonce</th>
+                <th>timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="rows">
+              <!-- rows appended by JS -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const rowsEl = document.getElementById('rows');
+  const countEl = document.getElementById('rowCount');
+  const seedEl = document.getElementById('seedHint');
+  const btnGen = document.getElementById('btnGen');
+  const btnReset = document.getElementById('btnReset');
+
+  let n = 0;
+
+  function updateCount() {
+    countEl.textContent = String(n);
+  }
+  const pad6 = (x) => String(x).padStart(6, '0');
+  function addRow(r) {
+    n += 1;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><code>${n}</code></td>
+      <td><code>${r.ts_ms}</code></td>
+      <td><span class="badge text-bg-success">${pad6(r.rand_a)}</span></td>
+      <td><span class="badge text-bg-warning">${pad6(r.calc_b)}</span></td>
+      <td><code>${r.nonce}</code></td>
+      <td><code>${r.ts_iso}</code></td>
+    `;
+    rowsEl.prepend(tr); // newest on top
+    updateCount();
+  }
+
+  async function generate() {
+    btnGen.disabled = true;
+    try {
+      const seed = encodeURIComponent(seedEl.value.trim());
+      const url = seed ? `/api/generate?seed_hint=${seed}` : `/api/generate`;
+      const resp = await fetch(url, { method: 'GET' });
+      if (!resp.ok) throw new Error('Request failed');
+      const data = await resp.json();
+      addRow(data);
+    } catch (e) {
+      alert('Generate failed: ' + e.message);
+    } finally {
+      btnGen.disabled = false;
+    }
+  }
+
+  function reset() {
+    rowsEl.innerHTML = '';
+    n = 0;
+    updateCount();
+  }
+
+  btnGen.addEventListener('click', generate);
+  btnReset.addEventListener('click', reset);
+
+  updateCount();
+})();
+</script>
+
+{% endblock %}

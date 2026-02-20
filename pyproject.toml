@@ -1,0 +1,10 @@
+[project]
+name = "randgen"
+version = "0.1.0"
+dependencies = ["Flask==3.0.2", "gunicorn==21.2.0"]
+
+[project.optional-dependencies]
+dev = ["pytest==8.2.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
