@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from flask import Flask, jsonify, render_template, request
 from rng import generate
-
+import os
 app = Flask(__name__)
 
 
@@ -36,4 +36,8 @@ def api_generate():
     )
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    debug = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+    host = os.getenv("FLASK_HOST", "127.0.0.1")
+    port = int(os.getenv("FLASK_PORT", "8000"))
+
+    app.run(host=host, port=port, debug=debug)
