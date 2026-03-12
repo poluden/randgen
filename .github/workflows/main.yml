@@ -59,4 +59,4 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
           local-dir: ./src/
-          server-dir: /flask
+          server-dir: /flask/
