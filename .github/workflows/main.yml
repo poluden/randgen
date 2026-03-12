@@ -52,6 +52,9 @@ jobs:
       - name: Run tests (pytest)
         run: |
           pytest -vv
+      - name: Clean python cache
+        run: |
+          find . -type d -name "__pycache__" -exec rm -rf {} +
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
