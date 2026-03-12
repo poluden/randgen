@@ -5,16 +5,13 @@ from rng import generate
 import os
 app = Flask(__name__)
 
-
 @app.get("/healthz")
 def healthz():
     return jsonify(status="ok")
 
-
 @app.get("/")
 def index():
     return render_template("index.html", result=None)
-
 
 @app.post("/generate")
 def do_generate():
