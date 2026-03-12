@@ -58,7 +58,7 @@ jobs:
       - name: Create tmp index
         run: |
           mkdir -p src/tmp
-          echo "" > src/tmp/index.html
+          touch src/tmp/restart.txt
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
