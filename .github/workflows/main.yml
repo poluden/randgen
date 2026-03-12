@@ -34,7 +34,6 @@ jobs:
           python -m pip install --upgrade pip
           # editable install + dev extra з pyproject.toml
           pip install -e ".[dev]"
-          # DevSecOps tooling (можеш перенести в optional-dependencies якщо хочеш)
           pip install ruff bandit pip-audit
 
       - name: Lint (ruff)
@@ -47,9 +46,17 @@ jobs:
 
       - name: Dependency scan (pip-audit)
         run: |
-          # аудить встановлене середовище
+          # аудит встановлене середовище
           pip-audit
 
       - name: Run tests (pytest)
         run: |
           pytest -vv
+      - name: Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: ./
+          server-dir: /
