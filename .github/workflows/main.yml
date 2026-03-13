@@ -56,7 +56,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Create tmp index
+      - name: Create tmp/restart.txt
         run: |
           mkdir -p src/tmp
           touch src/tmp/restart.txt
