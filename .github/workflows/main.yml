@@ -47,7 +47,7 @@ jobs:
       - name: Dependency scan (pip-audit)
         run: |
           # аудит встановлене середовище
-          pip-audit
+          pip-audit --skip-editable -r requirements.txt
 
       - name: Run tests (pytest)
         run: |
