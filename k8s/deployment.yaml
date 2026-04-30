@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: randgen-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: randgen
+  template:
+    metadata:
+      labels:
+        app: randgen
+    spec:
+      containers:
+        - name: randgen
+          image: randgen:v1.3
+          imagePullPolicy: Never # не тягнути з Docker Hub, брати локальний образ із Minikube
+          ports:
+            - containerPort: 8000
+          securityContext:
+              runAsUser: 1001
+              runAsGroup: 1001
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"

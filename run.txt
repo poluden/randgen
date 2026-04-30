@@ -1,0 +1,10 @@
+Переглянути логи   : docker logs randgen
+Зупинити           : docker stop randgen
+Видалити контейнер : docker rm randgen
+Видалити образ     : docker rmi randgen
+
+docker build -f dockerfile -t randgen .
+docker run -d -p 8000:8000 --name randgen randgen
+docker stop randgen
+
+docker build -t randgen:v1.0 .
